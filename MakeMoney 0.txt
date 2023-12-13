@@ -1,0 +1,1 @@
+{'money': 0, 'supply': 0, 'supply_blocked': 0, 'income_rate': 0, 'invalid action': 0}
