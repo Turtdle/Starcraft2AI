@@ -48,6 +48,6 @@ class NeuralNet:
         return self.model.predict(inputs)
     
     def save(self, save_name):
-        self.model.save(save_name + ".h5")
+        self.model.save("saves/" + save_name)
     
 

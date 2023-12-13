@@ -12,7 +12,7 @@ from sc2.data import Difficulty, Race
 from sc2.units import Units
 import numpy as np
 import NeuralNet
-
+from keras.models import load_model
 class DoNothing(BotAI):
     async def on_step(self, iteration):
         pass
@@ -40,6 +40,7 @@ class MakeMoney(BotAI):
             "income_rate": 0,
             "invalid action": 0
         }
+        self.money = []
 
     async def on_start(self):
         self.client.game_step = 50
@@ -53,21 +54,25 @@ class MakeMoney(BotAI):
             return
         
     async def build_worker(self):
-        townhall = None
-        for th in self.townhalls:
-            if th.is_idle:
-                townhall = th
-                break
-            if townhall == None or townhall.train_progress > th.train_progress:
-                townhall = th
-        if townhall == None:
-            self.reward["invalid action"] += 1
-            return
+        try:
+            townhall = None
+            for th in self.townhalls:
+                if th.is_idle:
+                    townhall = th
+                    break
+                if townhall == None or townhall.train_progress > th.train_progress:
+                    townhall = th
+            if townhall == None:
+                self.reward["invalid action"] += 1
+                return
 
-        if self.can_afford(UnitTypeId.SCV):
-            townhall.train(UnitTypeId.SCV)
-        else:
-            self.reward["invalid action"] += 1
+            if self.can_afford(UnitTypeId.SCV):
+                townhall.train(UnitTypeId.SCV)
+            else:
+                self.reward["invalid action"] += 1
+                return
+        except AttributeError as e:
+            print(str(e))
             return
     
     async def build_base(self):
@@ -94,6 +99,7 @@ class MakeMoney(BotAI):
             depot(AbilityId.MORPH_SUPPLYDEPOT_LOWER)
 
     async def on_step(self, iteration):
+        
         left_game = False
         if not left_game:
             prediction = self.net.predict(self.get_inputs())
@@ -117,7 +123,8 @@ class MakeMoney(BotAI):
             
             self.reward["money"] = self.minerals
             self.reward["supply"] = self.supply_used
-            self.reward["income_rate"] = self.townhalls.amount/( self.workers.amount/16)
+            self.reward["income_rate"] = self.calculate_income()
+            self.money.append(self.minerals)
             await self.return_idle_workers()
             await self.lower_all_depots()
             await self.sature_base()
@@ -138,11 +145,32 @@ class MakeMoney(BotAI):
         inputs = inputs.reshape((1, 5))
         return inputs
 
-    
+    def calculate_income(self):
+        bases = self.townhalls.amount
+        workers = self.workers.amount
+        if workers / 16 > bases:
+            return bases
+        else:
+            return workers / 16
 
-
-def main(id : int = 0):
+def run_bot(id : int):
     net = NeuralNet.NeuralNet()
+    AI = MakeMoney(net)
+    run_game(
+        maps.get("AcropolisLE"),
+        [Bot(Race.Terran, AI), Bot(Race.Terran, DoNothing())],
+        realtime=False,
+        save_replay_as="MakeMoney.SC2Replay",
+    )
+    reward = AI.reward
+    AI.net.save("MakeMoney" + str(id) + ".h5")
+    with open("MakeMoney" + str(id) + ".txt", "w") as f:
+        f.write(str(reward))
+
+def run_bot_from_file(Filename : str, id : int):
+    #loads neural net from file
+    model1 = load_model(Filename)
+    net = NeuralNet.NeuralNet(model=model1)
     AI = MakeMoney(net)
     run_game(
         maps.get("AcropolisLE"),
@@ -154,14 +182,7 @@ def main(id : int = 0):
     #after game is over, calculate reward
     reward = AI.reward
     #save neural net
-    AI.net.save("MakeMoney" + str(id) + ".h5")
+    AI.net.save("MakeMoney" + str(id))
     #save reward
-    with open("MakeMoney" + str(id) + ".txt", "w") as f:
+    with open("saves/MakeMoney" + str(id) + ".txt", "w") as f:
         f.write(str(reward))
-
-
-    
-
-
-if __name__ == "__main__":
-    main()
