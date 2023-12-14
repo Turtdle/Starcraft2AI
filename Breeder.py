@@ -31,16 +31,16 @@ def mutate(neural : NeuralNet, mutation_rate=0.05):
     return NeuralNet(mutated_model)
 
     
-def get_networks():
+def get_networks(epoch):
     networks = []
     for i in range(0, 100):
-        networks.append(NeuralNet.load("saves2/MakeMoney" + str(i) + ".h5"))
+        networks.append(NeuralNet.load("saves" + epoch + "/MakeMoney" + str(i) + ".h5"))
     return networks
 
-def get_rewards():
+def get_rewards(epoch):
     rewards = []
     for i in range(1, 100):
-        with open("saves2/MakeMoney" + str(i) + ".txt", "r") as f:
+        with open("saves" + epoch + "/MakeMoney" + str(i) + ".txt", "r") as f:
             reward = eval(f.read())
             rewards.append(reward)
     return rewards
@@ -58,9 +58,9 @@ def calculate_reward(reward):
 
     
 
-def get_best_networks():
-    networks = get_networks()
-    rewards = get_rewards()
+def get_best_networks(epoch):
+    networks = get_networks(epoch)
+    rewards = get_rewards(epoch)
 
     if not networks or not rewards:
         print("Error: No networks or rewards found.")
@@ -75,9 +75,9 @@ def get_best_networks():
 
     return top_networks
 
-def breed_networks():
-    networks = get_networks()
-    best_networks = get_best_networks()
+def breed_networks(epoch):
+    networks = get_networks(epoch)
+    best_networks = get_best_networks(epoch)
     #breed 40 networks from the top 40 networks
     #breed the rest 60 by choosing one of the top 40 and one randomly
     new_networks = []
@@ -93,7 +93,7 @@ def breed_networks():
         new_networks[i+20] = mutate(new_networks[i+20])
     #save all networks
     for i in range(100):
-        new_networks[i].save("saves3/MakeMoney" + str(i) + ".h5")
+        new_networks[i].save("saves" + epoch + "/MakeMoney" + str(i) + ".h5")
 
 
 def main():
