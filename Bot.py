@@ -187,11 +187,7 @@ def run_bot_from_file(Filename : str, id : int, epoch : str):
 
     # Assuming the current script is in the main directory
     script_directory = os.path.dirname(os.path.abspath(__file__))
-<<<<<<< HEAD
-    save_directory = os.path.join(script_directory, 'save' + epoch)
-=======
     save_directory = os.path.join(script_directory, 'saves' + epoch)
->>>>>>> 71280794c4fc18915918f263ea90101925b5f542
 
     # Use the full path to open the file
     with open(os.path.join(save_directory, "MakeMoney" + str(id) + ".txt"), "w") as f:
