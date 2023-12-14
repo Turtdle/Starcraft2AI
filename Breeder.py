@@ -93,11 +93,11 @@ def breed_networks(epoch):
         new_networks[i+20] = mutate(new_networks[i+20])
     #save all networks
     for i in range(100):
-        new_networks[i].save("saves" + epoch + "/MakeMoney" + str(i) + ".h5")
+        new_networks[i].save("saves" + str(int(epoch)+1) + "/MakeMoney" + str(i) + ".h5")
 
 
 def main():
-    breed_networks()
+    breed_networks('3')
 
 if __name__ == "__main__":
     main()

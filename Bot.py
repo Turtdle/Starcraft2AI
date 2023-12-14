@@ -168,7 +168,7 @@ def run_bot(id : int):
     with open("MakeMoney" + str(id) + ".txt", "w") as f:
         f.write(str(reward))
 
-def run_bot_from_file(Filename : str, id : int):
+def run_bot_from_file(Filename : str, id : int, epoch : str):
     #loads neural net from file
     model1 = load_model(Filename)
     net = NeuralNet.NeuralNet(model=model1)
@@ -187,7 +187,7 @@ def run_bot_from_file(Filename : str, id : int):
 
     # Assuming the current script is in the main directory
     script_directory = os.path.dirname(os.path.abspath(__file__))
-    save_directory = os.path.join(script_directory, 'saves3')
+    save_directory = os.path.join(script_directory, 'save' + epoch)
 
     # Use the full path to open the file
     with open(os.path.join(save_directory, "MakeMoney" + str(id) + ".txt"), "w") as f:
