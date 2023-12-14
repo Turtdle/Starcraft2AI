@@ -94,10 +94,3 @@ def breed_networks(epoch):
     #save all networks
     for i in range(100):
         new_networks[i].save("saves" + epoch + "/MakeMoney" + str(i) + ".h5")
-
-
-def main():
-    breed_networks()
-
-if __name__ == "__main__":
-    main()
