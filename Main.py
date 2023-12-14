@@ -2,7 +2,7 @@ import Bot
 from test import test
 from Breeder import breed_networks
 def main():
-    for i in range(4,10):
+    for i in range(5,100):
         test(str(i))
         breed_networks(str(i))
 

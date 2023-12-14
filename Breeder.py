@@ -54,7 +54,7 @@ def calculate_reward(reward):
     income rate is worth 100 points per income rate
     invalid action is worth -1 points per 20 invalid action
     """
-    return reward["money"] / 1000 + reward["supply"] - reward["supply_blocked"] - reward["invalid action"] / 20 + reward["income_rate"] * 100
+    return reward["money"] / 1000 + reward["supply"] - reward["supply_blocked"]/2 - reward["invalid action"] / 20 + reward["income_rate"] * 100
 
     
 
