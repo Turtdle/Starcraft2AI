@@ -12,6 +12,7 @@ from sc2.data import Difficulty, Race
 from sc2.units import Units
 import numpy as np
 import NeuralNet
+import os
 from keras.models import load_model
 class DoNothing(BotAI):
     async def on_step(self, iteration):
@@ -28,7 +29,6 @@ class MakeMoney(BotAI):
 
 
 
-
     def __init__(self, net : NeuralNet):
         super().__init__()
         self.placeholders: Set[Unit] = set()
@@ -42,6 +42,7 @@ class MakeMoney(BotAI):
         }
         self.money = []
 
+        self.a = 0
     async def on_start(self):
         self.client.game_step = 50
         await self.client.debug_show_map()
@@ -120,7 +121,7 @@ class MakeMoney(BotAI):
             else:
                 self.reward["invalid action"] += 1
                 return
-            
+            print(self.a)
             self.reward["money"] = self.minerals
             self.reward["supply"] = self.supply_used
             self.reward["income_rate"] = self.calculate_income()
@@ -181,8 +182,15 @@ def run_bot_from_file(Filename : str, id : int):
     
     #after game is over, calculate reward
     reward = AI.reward
-    #save neural net
-    AI.net.save("MakeMoney" + str(id))
     #save reward
-    with open("saves/MakeMoney" + str(id) + ".txt", "w") as f:
+
+
+    # Assuming the current script is in the main directory
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    save_directory = os.path.join(script_directory, 'saves3')
+
+    # Use the full path to open the file
+    with open(os.path.join(save_directory, "MakeMoney" + str(id) + ".txt"), "w") as f:
         f.write(str(reward))
+
+run_bot(111)

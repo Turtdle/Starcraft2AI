@@ -48,6 +48,9 @@ class NeuralNet:
         return self.model.predict(inputs)
     
     def save(self, save_name):
-        self.model.save("saves/" + save_name)
+        self.model.save(save_name)
+    
+    def load(save_name):
+        return NeuralNet(keras.models.load_model(save_name))
     
 
