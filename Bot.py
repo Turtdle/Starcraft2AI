@@ -164,8 +164,12 @@ def run_bot(id : int):
         save_replay_as="MakeMoney.SC2Replay",
     )
     reward = AI.reward
-    AI.net.save("MakeMoney" + str(id) + ".h5")
-    with open("MakeMoney" + str(id) + ".txt", "w") as f:
+    AI.net.save("saves0/MakeMoney" + str(id) + ".h5")
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    save_directory = os.path.join(script_directory, 'saves0')
+
+    # Use the full path to open the file
+    with open(os.path.join(save_directory, "MakeMoney" + str(id) + ".txt"), "w") as f:
         f.write(str(reward))
 
 def run_bot_from_file(Filename : str, id : int, epoch : str):
