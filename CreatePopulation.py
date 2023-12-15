@@ -1,6 +1,6 @@
 import Bot
 
-for i in range(87  ,88):
+for i in range(0,100):
     try:
         Bot.run_bot(i)
     except Exception as e:
