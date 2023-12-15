@@ -17,6 +17,17 @@ def calculate_reward(reward):
     """
     return reward["money"] / 1000 + reward["supply"] - reward["supply_blocked"]/2 - reward["invalid action"] / 20 + reward["income_rate"] * 100
 
+def get_best_network(start,finish):
+    rewards = {}
+    for j in range(start, finish+1):
+
+        for i in range(1, 100):
+            with open("saves" + str(j) + "/MakeMoney" + str(i) + ".txt", "r") as f:
+                reward = eval(f.read())
+                rewards["saves" + str(j) + "/MakeMoney" + str(i) + ".txt"] = calculate_reward(reward)
+    #returns the best key and value
+    return max(rewards, key=rewards.get), rewards[max(rewards, key=rewards.get)]
+
 def main():
     #get average rewards of epoch 2-11
     #get best of each epoch, print results, cut the decimal to 2 places
@@ -29,6 +40,7 @@ def main():
         best = max(scores)
         best = round(best, 2)
         print("Epoch " + str(i) + " best: " + str(best))
+    print ("Best network: " + str(get_best_network(2, 11)))
         
 
 if __name__ == "__main__":
