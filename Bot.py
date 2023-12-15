@@ -193,4 +193,3 @@ def run_bot_from_file(Filename : str, id : int, epoch : str):
     with open(os.path.join(save_directory, "MakeMoney" + str(id) + ".txt"), "w") as f:
         f.write(str(reward))
 
-run_bot(111)
